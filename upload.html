@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>JS Bin</title>
+</head>
+<body>
+    <input type="file" name="picture" accept="image/png, image/jpeg" />
+    <canvas width=400 height=400 id="canvas"></canvas>
+    <input type="range" max="1000" min="10" value="100">
+    <script>
+        var canvas = document.querySelector('canvas')
+        var ctx = canvas.getContext('2d');
+        document.querySelector('input[name=picture]').onchange = function (e) {
+            readFile(e.target.files[0]);
+        }
+        function readFile(file) {
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function (e) {
+                //console.log(e)
+                applyDataUrlToCanvas(reader.result);
+            };
+        }
+        function applyDataUrlToCanvas(base) {
+            var img = new Image;
+            img.onload = function () {
+                ctx.drawImage(img, 0, 0);
+            };
+            img.src = base;
+            
+        }
+        document.querySelector('input[type="range"]').addEventListener('input',function(){
+            console.log(this.value/100)
+            var scaleImg = this.value/100
+            console.log(typeof scaleImg)
+            ctx.scale( scaleImg, scaleImg )
+        })
+        //ctx.scale(2.3,2.3)
+        // stop FireFox from replacing the whole page with the file.
+        canvas.ondragover = function () {
+            console.log(11111)
+            return false;
+        };
+        // Add drop handler
+        canvas.ondrop = function (e) {
+            console.log(121)
+            e.stopPropagation();
+            e.preventDefault();
+            e = e || window.event;
+            var files = e.dataTransfer.files;
+            if (files) {
+                readFile(files[0]);
+            }
+        }
+    </script>
+</body>
+</html>
