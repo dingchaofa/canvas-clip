@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>EditPortrait</title>
+    <style>
+        main {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 0 auto;
+        }
+        canvas.getImg {
+            position: relative;
+            border: 1px solid #ddd;
+        }
+        .bgImg {
+            position: absolute;
+            z-index: 9999;
+            display: none;
+            top: 0px;
+            left: 0px;
+        }
+        .editImg {
+            position: absolute;
+            display: none;
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+    <div id="portait">
+        <header>
+            <input type="file">
+            <input type="button" class="save" value="保存">
+        </header>
+        <main>
+            <canvas class="getImg"></canvas>
+            <canvas class="bgImg"></canvas>
+            <canvas class="editImg"></canvas>
+        </main>
+        <footer>
+            <div class="previewImg"></div>
+            <div class="finalImg"><img src="" alt=""></div>
+        </footer>
+    </div>
+    <script src="main.js"></script>
+    <script>
+        new EditPortrait()
+    </script>
+</body>
+</html>
