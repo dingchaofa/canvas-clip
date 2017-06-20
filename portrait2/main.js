@@ -9,8 +9,8 @@ EditPortrait.prototype = {
         this.editImg = $('.editImg')
         this.finalImg = $('.finalImg img')
         this.saveImg = $('input[type="button"]')
-        this.clipAreaX = 20  //左上角顶点的x坐标
-        this.clipAreaY = 20  //左上角顶点的y坐标
+        this.clipAreaX = 20  //修剪区左上角顶点的x坐标
+        this.clipAreaY = 20  //修剪区左上角顶点的y坐标
         this.clipWidth = 160  //修剪图片的宽，后期调用可更改
         this.clipHeight = 160  //修剪图片的高，后期调用可更改
         var _this = this
@@ -60,35 +60,35 @@ EditPortrait.prototype = {
         var bgImgCtx = this.bgImg.getContext('2d')
         bgImgCtx.fillStyle = 'rgba(0,0,0,0.6)'
         bgImgCtx.fillRect(0,0, this.imgWidth,this.imgHeight) //覆盖整个getImg
-        bgImgCtx.clearRect(this.clipAreaX,this.clipAreaY,this.clipWidth,this.clipHeight)  //清除这个区域的内容
+        bgImgCtx.clearRect(this.clipAreaX,this.clipAreaY,this.clipWidth,this.clipHeight)  //得到修剪区域
     },
     drawImg: function(){
-        var draging = false,
-            startX = 0,
-            startY = 0,
+        var draging = false,//判断是否需要拖动
+            startX,
+            startY,
             _this = this
         this.bgImg.addEventListener('mousemove',function(e){
-            var pageX = e.pageX - (_this.area.offsetLeft + this.offsetLeft),
+            var pageX = e.pageX - (_this.area.offsetLeft + this.offsetLeft),//获取鼠标距离bgImg边缘的距离
                 pageY = e.pageY - (_this.area.offsetTop + this.offsetTop)
             if ( pageX > _this.clipAreaX && pageX < _this.clipAreaX + _this.clipWidth && pageY > _this.clipAreaY && pageY < _this.clipAreaY + _this.clipHeight ){
-                this.style.cursor = 'move'
-                this.onmousedown = function(){
+                this.style.cursor = 'move'  //在bgImg区域内，光标移动到修剪区，光标变为拖动
+                this.onmousedown = function(e){
                     draging = true
                     _this.ex =  _this.clipAreaX
                     _this.ey =  _this.clipAreaY
                     startX = e.pageX - ( _this.area.offsetLeft + this.offsetLeft );
                     startY = e.pageY - ( _this.area.offsetTop + this.offsetTop );
                 }
-                window.onmouseup = function() {
+                window.onmouseup = function(){  //事件冒泡到window，无论在任何区域松开鼠标，都不会再拖动了。
                     draging = false
                 }
                 if(draging){
-                    if( _this.ex + (pageX - startX) < 0 ) {
-                        _this.clipAreaX = 0
+                    if( _this.ex + (pageX - startX) < 0 ){
+                        _this.clipAreaX = 0 //最大拖动到边缘
                     }else if( _this.ex + (pageX - startX) + _this.clipWidth > _this.imgWidth) {
-                        _this.clipAreaX = _this.imgWidth - _this.clipWidth
+                        _this.clipAreaX = _this.imgWidth - _this.clipWidth //最大拖动到边缘
                     }else{
-                        _this.clipAreaX = _this.ex + (pageX - startX)
+                        _this.clipAreaX = _this.ex + (pageX - startX) //拖动距离
                     }
                     if (_this.ey + (pageY - startY) < 0) {
                         _this.clipAreaY = 0
@@ -114,7 +114,7 @@ EditPortrait.prototype = {
             img.src = _this.imgUrl
             img.onload = function(){
                 editImgCtx.drawImage(img,_this.clipAreaX,_this.clipAreaY,_this.clipWidth,_this.clipHeight,0,0,_this.clipWidth,_this.clipHeight)
-                _this.finalImg.src = _this.editImg.toDataURL()
+                _this.finalImg.src = _this.editImg.toDataURL() //获取修剪区域的base，插入到img中，即可显示在页面
             }
         })
     }
