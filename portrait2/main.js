@@ -1,6 +1,5 @@
 var EditPortrait = function(){
     this.init()
-    
 }
 EditPortrait.prototype = {
     init: function(){
@@ -12,57 +11,56 @@ EditPortrait.prototype = {
         this.saveImg = $('input[type="button"]')
         this.clipAreaX = 20  //左上角顶点的x坐标
         this.clipAreaY = 20  //左上角顶点的y坐标
-        this.clipWidth = 160  //修剪图片的宽
-        this.clipHeight = 160  //修剪图片的高
+        this.clipWidth = 160  //修剪图片的宽，后期调用可更改
+        this.clipHeight = 160  //修剪图片的高，后期调用可更改
         var _this = this
         $('input[type="file"]').addEventListener('change',function(e){
-            _this.readFile(e.target.files[0])
-            _this.saveImage()
+            _this.readFile(e.target.files[0])  
+            _this.saveImage() //上传过图片才能点击保存
         })
     },
-    readFile: function(file) {
+    readFile: function(file) {  //读取文件到内存
         var reader = new FileReader(),
             _this = this
         reader.readAsDataURL(file)
         reader.onload = function (e) {
-            //console.log(e)
             _this.applyDataUrlToCanvas(reader.result);
         }
     },
-    applyDataUrlToCanvas: function(url){
+    applyDataUrlToCanvas: function(result){  //把图片添加到canvas
         var _this = this,
             getImgCtx = this.getImg.getContext('2d'),
             img = new Image(),
             areaW = this.area.offsetWidth,
             areaH = this.area.offsetHeight
-        img.src = url
+        img.src = result
         img.onload = function(){
-            if(img.width < areaW && img.height < areaH){
+            if(img.width < areaW && img.height < areaH){  
                 _this.imgWidth = img.width
                 _this.imgHeight = img.height
             }else{
-                var bgWidth = img.width / (img.height / areaH),
+                var bgWidth = img.width / (img.height / areaH),//获取等比例区域大小图片，防止改变图片比例
                     bgHeight = img.height / (img.width / areaW)
-                _this.imgWidth = img.width > img.height ? areaW : bgWidth
+                _this.imgWidth = img.width > img.height ? areaW : bgWidth 
                 _this.imgHeight = img.height > img.width ? areaH : bgHeight
             }
-            _this.getImg.width = _this.imgWidth
+            _this.getImg.width = _this.imgWidth  //填充整个getImg区域
             _this.getImg.height = _this.imgHeight
             getImgCtx.drawImage(img,0,0,_this.imgWidth,_this.imgHeight)
-            _this.imgUrl = _this.getImg.toDataURL()
+            _this.imgUrl = _this.getImg.toDataURL() //获取图片的base64
             _this.clipImg()
             _this.drawImg()
         }
     },
-    clipImg: function(){
+    clipImg: function(){  //获取修剪区域
         this.bgImg.width = this.imgWidth
         this.bgImg.height = this.imgHeight
-        this.bgImg.style.display = 'block'
+        this.bgImg.style.display = 'block'  //蒙阴层显现
 
         var bgImgCtx = this.bgImg.getContext('2d')
         bgImgCtx.fillStyle = 'rgba(0,0,0,0.6)'
-        bgImgCtx.fillRect(0,0, this.imgWidth,this.imgHeight)
-        bgImgCtx.clearRect(this.clipAreaX,this.clipAreaY,this.clipWidth,this.clipHeight)
+        bgImgCtx.fillRect(0,0, this.imgWidth,this.imgHeight) //覆盖整个getImg
+        bgImgCtx.clearRect(this.clipAreaX,this.clipAreaY,this.clipWidth,this.clipHeight)  //清除这个区域的内容
     },
     drawImg: function(){
         var draging = false,
