@@ -52,7 +52,7 @@ EditPortrait.prototype = {
             _this.bgY = (areaH - _this.imgHeight) /2 + 'px'
             _this.getImg.width = _this.imgWidth
             _this.getImg.height = _this.imgHeight
-            _this.getImg.style.left = _this.bgX
+            // _this.getImg.style.left = _this.bgX
             _this.getImg.style.top = _this.bgY
             getImgCtx.drawImage(img,0,0,_this.imgWidth,_this.imgHeight)
             _this.imgUrl = _this.getImg.toDataURL()
@@ -64,7 +64,7 @@ EditPortrait.prototype = {
         this.bgImg.width = this.imgWidth
         this.bgImg.height = this.imgHeight
         this.bgImg.style.display = 'block'
-        this.bgImg.style.left = this.bgX
+        // this.bgImg.style.left = this.bgX
         this.bgImg.style.top = this.bgY
 
         var bgImgCtx = this.bgImg.getContext('2d')
